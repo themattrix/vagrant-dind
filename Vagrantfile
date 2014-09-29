@@ -8,6 +8,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.synced_folder ".", "/vagrant"
 
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", 2048]
+  end
+
   # Uncomment below to use more than one instance at once
   # config.vm.network :forwarded_port, guest: 2375, host: 2375, auto_correct: true
 
@@ -29,10 +33,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     EOT
   end
 
-  config.vm.provision "file", source: "autorun.sh", destination: "/home/docker/autorun.sh"
+  config.vm.provision "file", source: "autorun.sh", destination: "/home/docker/autorun.sh", run: "always"
 
   # Ensure that SSH'ing into the Vagrant box launches the dev environment
-  config.vm.provision :shell do |s|
+  config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
       chmod u+x /home/docker/autorun.sh || exit $?
 
@@ -50,7 +54,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Ensure that the /vagrant/.ssh directory (if present) is copied and that all
   # of the permissions are appropriately set.
-  config.vm.provision :shell do |s|
+  config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
       mkdir -p  /home/docker/.ssh-inner || exit $?
       chmod 700 /home/docker/.ssh-inner || exit $?
@@ -74,7 +78,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Ensure that the "repos" directory exists
-  config.vm.provision "shell", inline: 'mkdir -p /mnt/sda/repos && chown -R root:root /mnt/sda/repos'
+  config.vm.provision "shell", inline: 'mkdir -p /mnt/sda/repos && chown -R root:root /mnt/sda/repos', run: "always"
 
   # Build the docker image containing the development environment
   config.vm.provision :docker do |d|
