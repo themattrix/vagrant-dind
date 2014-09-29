@@ -71,7 +71,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         )
       fi
 
-      chown -R docker:docker /home/docker/.ssh-inner
+      # Should be owned by the inner docker user (root)
+      chown -R root:root /home/docker/.ssh-inner
     EOT
   end
 

@@ -34,4 +34,7 @@ RUN mkdir -p /home/.nvim/autoload \
 
 RUN nvim -u /home/.vim_plug -c 'PlugInstall|q!|q!' > /dev/null
 
+RUN sed -r -i -e 's@^root:.*@root:x:0:0:root:/home:/bin/bash@' /etc/passwd \
+    && rm -rf /root
+
 CMD ["wrapdocker"]
