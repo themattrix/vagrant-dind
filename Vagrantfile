@@ -16,7 +16,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.network :forwarded_port, guest: 2375, host: 2375, auto_correct: true
 
   # Fix busybox/udhcpc issue
-  config.vm.provision :shell do |s|
+  config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
       if ! grep -qs ^nameserver /etc/resolv.conf; then
         sudo /sbin/udhcpc
@@ -26,7 +26,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Adjust datetime after suspend and resume
-  config.vm.provision :shell do |s|
+  config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
       sudo /usr/local/bin/ntpclient -s -h pool.ntp.org
       date
