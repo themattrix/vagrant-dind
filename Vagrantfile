@@ -52,10 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # of the permissions are appropriately set.
   config.vm.provision :shell do |s|
     s.inline = <<-EOT
-      if [ ! -d "/home/docker/.ssh-inner" ]; then
-        mkdir -p "/home/docker/.ssh-inner" || exit $?
-      fi
-
+      mkdir -p  /home/docker/.ssh-inner || exit $?
       chmod 700 /home/docker/.ssh-inner || exit $?
 
       if [ -d "/vagrant/.ssh" ]; then
@@ -75,6 +72,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       chown -R root:root /home/docker/.ssh-inner
     EOT
   end
+
+  # Ensure that the "repos" directory exists
+  config.vm.provision "shell", inline: 'mkdir -p /mnt/sda/repos && chown -R root:root /mnt/sda/repos'
 
   # Build the docker image containing the development environment
   config.vm.provision :docker do |d|
