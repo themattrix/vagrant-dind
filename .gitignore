@@ -1,4 +1,5 @@
 /app/bin/docker
+/.vagrant
 *~
 *.swp
 *.swo
