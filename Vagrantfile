@@ -34,8 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ensure that SSH'ing into the Vagrant box launches the dev environment
   config.vm.provision :shell do |s|
     s.inline = <<-EOT
-      chmod u+x /home/docker/autorun.sh
-      cp /usr/local/bin/docker /vagrant/app/bin/docker
+      chmod u+x /home/docker/autorun.sh || exit $?
 
       if ! grep -sqF "autorun.sh" /home/docker/.ashrc; then
         {
@@ -43,6 +42,36 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           echo "exec /home/docker/autorun.sh"
         } >> /home/docker/.ashrc
       fi
+    EOT
+  end
+
+  # Ensure that the docker binary is available to the dev environment Dockerfile
+  config.vm.provision "shell", inline: 'cp /usr/local/bin/docker /vagrant/app/bin/docker'
+
+  # Ensure that the /vagrant/.ssh directory (if present) is copied and that all
+  # of the permissions are appropriately set.
+  config.vm.provision :shell do |s|
+    s.inline = <<-EOT
+      if [ ! -d "/home/docker/.ssh-inner" ]; then
+        mkdir -p "/home/docker/.ssh-inner" || exit $?
+      fi
+
+      chmod 700 /home/docker/.ssh-inner || exit $?
+
+      if [ -d "/vagrant/.ssh" ]; then
+        cp -f /vagrant/.ssh/* /home/docker/.ssh-inner/ || exit $?
+        (
+          cd /home/docker/.ssh-inner || exit $?
+          {
+            chmod -f 600 *
+            chmod -f 644 *.pub
+            chmod -f 640 authorized_keys
+            chmod -f 644 known_hosts
+          } &> /dev/null
+        )
+      fi
+
+      chown -R docker:docker /home/docker/.ssh-inner
     EOT
   end
 

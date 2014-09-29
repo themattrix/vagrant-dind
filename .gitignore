@@ -1,5 +1,6 @@
 /app/bin/docker
 /.vagrant
+/.ssh
 *~
 *.swp
 *.swo

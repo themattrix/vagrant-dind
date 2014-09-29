@@ -24,6 +24,7 @@ ADD ./bin/wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/docker /usr/local/bin/wrapdocker
 
 ENV HOME /home
+ENV ET_CLONE_HOME 2014-09-29 14:05 CST
 RUN git clone https://github.com/themattrix/home.git
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
