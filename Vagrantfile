@@ -78,7 +78,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Ensure that the "repos" directory exists
-  config.vm.provision "shell", inline: 'mkdir -p /mnt/sda/repos && chown -R root:root /mnt/sda/repos', run: "always"
+  config.vm.provision :shell, run: "always" do |s|
+    s.inline = <<-EOT
+      mkdir -p /mnt/sda/repos || exit $?
+      chown root:docker /mnt/sda/repos || exit $?
+      chmod 775 /mnt/sda/repos || exit $?
+    EOT
+  end
 
   # Build the docker image containing the development environment
   config.vm.provision :docker do |d|
