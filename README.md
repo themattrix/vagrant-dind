@@ -92,3 +92,11 @@ as a volume to the development container.
 > `vagrant ssh -c '<your-command>'`
 >
 > If your development container ever gets messed up, this can be a life saver.
+
+
+**...develop outside of the development container, but run things inside it?**
+
+> My current technique is to set my IDE (PyCharm, in my case) to deploy files
+> to the Vagrant box in a subdirectory of `/mnt/sda/repos/`. I then have
+> a Vagrant ssh session open, from which I can run anything from the command
+> line.
