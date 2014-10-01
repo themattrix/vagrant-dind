@@ -14,7 +14,7 @@ $ vagrant ssh
 ```
 
 At this point you'll be sitting in a tmux session, which is running in
-a one-time docker container. Exiting or disconnecting this session will
+a single-session docker container. Exiting or disconnecting the session will
 cause the container to be destroyed. When the container is destroyed, only
 three things survive:
 
