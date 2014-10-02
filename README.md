@@ -28,6 +28,24 @@ but your work area and any docker images and containers will persist
 between sessions.
 
 
+## Architecture
+
+
+    $ vagrant up
+    $ vagrant ssh
+
+    .--[ Vagrant: boot2docker ]----------------------.
+    |                                                |
+    | <autorun.sh>                                   |
+    |                                                |
+    | .--[ docker (privileged): ubuntu:14.04 ]------.|
+    | |  _______________________________________[0] ||
+    | |  root@c23311ce9a9f [/]                      ||
+    | |  #                                          ||
+    | '---------------------------------------------'|
+    '------------------------------------------------'
+
+
 ## SSH Config
 
 In order to make SSH operations useful inside the development container, you
