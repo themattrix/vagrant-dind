@@ -20,16 +20,6 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Add docker from the external environment
-ADD ./bin/docker /usr/local/bin/docker
-ADD ./bin/wrapdocker /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/docker /usr/local/bin/wrapdocker
-
-# Add fig: "Fast, isolated development environments using Docker"
-ADD https://github.com/docker/fig/releases/download/0.5.2/linux \
-    /usr/local/bin/fig
-RUN chmod +x /usr/local/bin/fig
-
 # Change the home directory of the root user to /home
 ENV HOME /home
 RUN sed -r -i -e 's@^root:.*@root:x:0:0:root:/home:/bin/bash@' /etc/passwd \
@@ -43,9 +33,19 @@ RUN git clone https://github.com/themattrix/home.git \
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
+# Add fig: "Fast, isolated development environments using Docker"
+ADD https://github.com/docker/fig/releases/download/0.5.2/linux \
+    /usr/local/bin/fig
+RUN chmod +x /usr/local/bin/fig
+
 ADD https://raw.githubusercontent.com/junegunn/vim-plug/0.5.7/plug.vim \
     /home/.nvim/autoload/plug.vim
 
 RUN nvim -u /home/.vim_plug -c 'PlugInstall|q!|q!' > /dev/null
+
+# Add docker from the external environment
+ADD ./bin/docker /usr/local/bin/docker
+ADD ./bin/wrapdocker /usr/local/bin/wrapdocker
+RUN chmod +x /usr/local/bin/docker /usr/local/bin/wrapdocker
 
 CMD ["wrapdocker"]

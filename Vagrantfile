@@ -59,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       mkdir -p  /home/docker/.ssh-inner || exit $?
       chmod 700 /home/docker/.ssh-inner || exit $?
 
-      if [ -d "/vagrant/.ssh" ]; then
+      if [ -d /vagrant/.ssh ]; then
         cp -f /vagrant/.ssh/* /home/docker/.ssh-inner/ || exit $?
         (
           cd /home/docker/.ssh-inner || exit $?
