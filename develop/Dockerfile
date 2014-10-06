@@ -25,11 +25,15 @@ ENV HOME /home
 RUN sed -r -i -e 's@^root:.*@root:x:0:0:root:/home:/bin/bash@' /etc/passwd \
     && rm -rf /root
 
+# Store the bash history to its own directory so that we can mount a volume
+# to that location and have the history preserved across sessions.
+ENV HISTFILE /home/.bash_history/history
+
 # Check out a specific commit - this has the advantage of invalidating the
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout 7bcf4a1
+    && git checkout e75b0a6
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
