@@ -50,7 +50,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Ensure that the docker binary is available to the dev environment Dockerfile
-  config.vm.provision "shell", inline: 'cp /usr/local/bin/docker /vagrant/app/bin/docker'
+  config.vm.provision "shell", inline: 'cp /usr/local/bin/docker /vagrant/develop/bin/docker'
 
   # Ensure that the /vagrant/.ssh directory (if present) is copied and that all
   # of the permissions are appropriately set.
@@ -88,7 +88,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Build the docker image containing the development environment
   config.vm.provision :docker do |d|
-    d.build_image "/vagrant/app", args: "-t develop"
+    d.build_image "/vagrant/develop", args: "-t develop"
   end
 
   config.vbguest.auto_update = false

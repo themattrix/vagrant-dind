@@ -72,7 +72,7 @@ as a volume to the development container.
 > 
 > For all future sessions:
 > 
-> 1. Modify `vagrant-dind/app/Dockerfile` to install the package. It's
+> 1. Modify `vagrant-dind/develop/Dockerfile` to install the package. It's
 > probably easiest to include it in one of the existing `apt-get install`
 > commands.
 > 2. Reload or re-provision the Vagrant box.

@@ -1,4 +1,4 @@
-/app/bin/docker
+/develop/bin/docker
 /.vagrant
 /.ssh
 *~
