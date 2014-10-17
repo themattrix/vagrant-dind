@@ -38,9 +38,8 @@ RUN git clone https://github.com/themattrix/home.git \
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
 # Add fig: "Fast, isolated development environments using Docker"
-ADD https://github.com/docker/fig/releases/download/0.5.2/linux \
-    /usr/local/bin/fig
-RUN chmod +x /usr/local/bin/fig
+RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1.0.0/fig-`uname -s`-`uname -m` \
+    && chmod +x /usr/local/bin/fig
 
 ADD https://raw.githubusercontent.com/junegunn/vim-plug/0.5.7/plug.vim \
     /home/.nvim/autoload/plug.vim
