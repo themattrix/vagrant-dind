@@ -17,6 +17,7 @@ RUN apt-get update \
     && apt-get -y install \
         iptables ca-certificates lxc apt-transport-https \
         tmux git neovim htop socat man ruby hh bash-completion \
+        python-pygments \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -33,7 +34,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout 80ac598
+    && git checkout a86f6dd
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
