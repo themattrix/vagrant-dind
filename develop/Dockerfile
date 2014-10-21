@@ -33,7 +33,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout 642dd5d
+    && git checkout d6fbb92
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
