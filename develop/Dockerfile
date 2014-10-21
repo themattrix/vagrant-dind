@@ -10,14 +10,13 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN add-apt-repository -y ppa:rudenko/neovim
 RUN add-apt-repository -y ppa:ultradvorka/ppa
 
 RUN apt-get update \
     && apt-get -y install \
         iptables ca-certificates lxc apt-transport-https \
-        tmux git neovim htop socat man ruby hh bash-completion \
-        python-pygments \
+        tmux git vim htop socat man ruby hh bash-completion \
+        python-pygments vim-youcompleteme \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -34,7 +33,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout acc018f
+    && git checkout 642dd5d
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
@@ -43,9 +42,11 @@ RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1
     && chmod +x /usr/local/bin/fig
 
 ADD https://raw.githubusercontent.com/junegunn/vim-plug/0.5.7/plug.vim \
-    /home/.nvim/autoload/plug.vim
+    /home/.vim/autoload/plug.vim
 
-RUN nvim -u /home/.vim_plug -c 'PlugInstall|q!|q!' > /dev/null
+# Install vim plugins
+RUN vim -u /home/.vim_plug -c 'PlugInstall|q!|q!' > /dev/null
+RUN vam install youcompleteme
 
 # Add docker from the external environment
 ADD ./bin/docker /usr/local/bin/docker
