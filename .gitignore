@@ -1,6 +1,7 @@
 /develop/bin/docker
 /.vagrant
 /.ssh
+/.restore.tar
 *~
 *.swp
 *.swo

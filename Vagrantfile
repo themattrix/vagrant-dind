@@ -12,9 +12,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--memory", 2048]
   end
 
-  # Uncomment below to use more than one instance at once
-  # config.vm.network :forwarded_port, guest: 2375, host: 2375, auto_correct: true
-
   # Fix busybox/udhcpc issue
   config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
@@ -35,14 +32,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provision "file", source: "autorun.sh", destination: "/home/docker/autorun.sh", run: "always"
 
-  # Ensure that SSH'ing into the Vagrant box launches the dev environment
+  # Ensure that SSH'ing into the Vagrant box launches the development environment.
   config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
-      chmod u+x /home/docker/autorun.sh || exit $?
+      set -e
+
+      chmod u+x /home/docker/autorun.sh
 
       if ! grep -sqF "autorun.sh" /home/docker/.ashrc; then
         {
           echo
+          echo "export PERSIST_DIR=/mnt/sda/persist"
+          echo "export RESTORE_TAR=/vagrant/.restore.tar"
           echo "exec /home/docker/autorun.sh"
         } >> /home/docker/.ashrc
       fi
@@ -52,37 +53,50 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ensure that the docker binary is available to the dev environment Dockerfile
   config.vm.provision "shell", inline: 'cp /usr/local/bin/docker /vagrant/develop/bin/docker'
 
-  # Ensure that the /vagrant/.ssh directory (if present) is copied and that all
-  # of the permissions are appropriately set.
+  # Create the /mnt/sda/persist directory if it does not already exist. If a
+  # /vagrant/.restore.tar.gz file exists and the persist directory does not,
+  # the restore archive will be extracted to the persist directory.
   config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
-      mkdir -p  /home/docker/.ssh-inner || exit $?
-      chmod 700 /home/docker/.ssh-inner || exit $?
+      set -e
 
-      if [ -d /vagrant/.ssh ]; then
-        cp -f /vagrant/.ssh/* /home/docker/.ssh-inner/ || exit $?
-        (
-          cd /home/docker/.ssh-inner || exit $?
-          {
-            chmod -f 600 *
-            chmod -f 644 *.pub
-            chmod -f 640 authorized_keys
-            chmod -f 644 known_hosts
-          } &> /dev/null
-        )
+      persist_dir=/mnt/sda/persist
+      restore_tar=/vagrant/.restore.tar
+      persist_ssh="${persist_dir}/home/.ssh"
+
+      if [ ! -d "${persist_dir}" ]; then
+        if [ -f "${restore_tar}" ]; then
+          tar -C "$(dirname "${persist_dir}")" -xf "${restore_tar}"
+        else
+          mkdir -p "${persist_dir}/var/lib/docker"
+          mkdir -p "${persist_dir}/repos"
+          mkdir -p "${persist_dir}/home/.bash_history"
+          mkdir -p "${persist_dir}/home/.ssh"
+        fi
       fi
 
-      # Should be owned by the inner docker user (root)
-      chown -R root:root /home/docker/.ssh-inner
-    EOT
-  end
+      # Copy new ssh keys into the VM.
+      if [ -d /vagrant/.ssh ]; then
+        cp -f /vagrant/.ssh/* "${persist_ssh}"
+      fi
 
-  # Ensure that the "repos" directory exists
-  config.vm.provision :shell, run: "always" do |s|
-    s.inline = <<-EOT
-      mkdir -p /mnt/sda/repos || exit $?
-      chown root:docker /mnt/sda/repos || exit $?
-      chmod 775 /mnt/sda/repos || exit $?
+      # Always ensure that the .ssh directory has correct attributes.
+      (
+        cd "${persist_ssh}"
+        {
+          chmod -f 700 .
+          chown -R root:root .
+          set +e
+          chmod -f 600 *
+          chmod -f 644 *.pub
+          chmod -f 640 authorized_keys
+          chmod -f 644 known_hosts
+        } &> /dev/null
+      )
+
+      # Always ensure that the repos directory has correct attributes.
+      chown root:docker "${persist_dir}/repos"
+      chmod 775 "${persist_dir}/repos"
     EOT
   end
 
@@ -91,5 +105,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     d.build_image "/vagrant/develop", args: "-t develop"
   end
 
+  # Don't try to update the VirtualBox guest additions.
   config.vbguest.auto_update = false
 end

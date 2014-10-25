@@ -1,9 +1,29 @@
 #!/bin/sh
 
+### Run development environment
+
 docker run -i -t --rm --privileged=true \
-    -v /mnt/sda/var/lib/docker-inner:/var/lib/docker \
-    -v /mnt/sda/repos:/repos \
-    -v /mnt/sda/history:/home/.bash_history \
-    -v /home/docker/.ssh-inner:/home/.ssh \
-    -v /vagrant:/vagrant \
+    -v "/vagrant:/vagrant" \
+    -v "${PERSIST_DIR}/var/lib/docker:/var/lib/docker" \
+    -v "${PERSIST_DIR}/repos:/repos" \
+    -v "${PERSIST_DIR}/home/.bash_history:/home/.bash_history" \
+    -v "${PERSIST_DIR}/home/.ssh:/home/.ssh" \
     develop
+
+### Archive persistent data
+
+set -e
+
+echo
+echo -n "Archiving '${PERSIST_DIR}' to '${RESTORE_TAR}'..."
+
+sudo tar \
+    -C "$(dirname "${PERSIST_DIR}")" \
+    -cf ~/"$(basename "${RESTORE_TAR}")" \
+    --exclude=persist/var/lib/docker \
+    "$(basename "${PERSIST_DIR}")"
+
+sudo mv -f ~/"$(basename "${RESTORE_TAR}")" "${RESTORE_TAR}"
+
+echo 'success!'
+echo
