@@ -105,6 +105,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     d.build_image "/vagrant/develop", args: "-t develop"
   end
 
+  # Delete all untagged images that aren't in use.
+  config.vm.provision :shell, run: "always" do |s|
+    s.inline = <<-EOT
+      untagged=$(docker images | grep -F '<none>' | awk '{print $3}')
+
+      if [ -n "${untagged}" ]; then
+        docker rmi ${untagged} || true
+      fi
+    EOT
+  end
+
   # Don't try to update the VirtualBox guest additions.
   config.vbguest.auto_update = false
 end
