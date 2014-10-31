@@ -20,6 +20,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Can't live without rainbow-colored output
+RUN gem install lolcat
+
 # Change the home directory of the root user to /home
 ENV HOME /home
 RUN sed -r -i -e 's@^root:.*@root:x:0:0:root:/home:/bin/bash@' /etc/passwd \
