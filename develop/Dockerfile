@@ -28,6 +28,7 @@ RUN curl https://raw.githubusercontent.com/rust-lang/rust/9106546aa7d56dcaf650d9
 
 # Change the home directory of the root user to /home
 ENV HOME /home
+ENV USER root
 RUN sed -r -i -e 's@^root:.*@root:x:0:0:root:/home:/bin/bash@' /etc/passwd \
     && rm -rf /root
 
