@@ -16,12 +16,15 @@ RUN apt-get update \
     && apt-get -y install \
         iptables ca-certificates lxc apt-transport-https \
         tmux git vim htop socat man ruby hh bash-completion \
-        python-pygments vim-youcompleteme \
+        curl python-pygments vim-youcompleteme \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Can't live without rainbow-colored output
 RUN gem install lolcat
+
+# Install Rust and Cargo
+RUN curl https://raw.githubusercontent.com/rust-lang/rust/9106546aa7d56dcaf650d9bc03fe5b5c3cf3460d/src/etc/rustup.sh | bash
 
 # Change the home directory of the root user to /home
 ENV HOME /home
@@ -36,7 +39,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout 0da74b1
+    && git checkout 7e65c56
 
 # Set locale
 RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
