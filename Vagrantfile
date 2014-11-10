@@ -7,6 +7,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "yungsang/boot2docker"
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.synced_folder ".", "/vagrant"
+  config.vm.network "forwarded_port", guest: 8888, host: 8888
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ["modifyvm", :id, "--memory", 2048]
@@ -44,7 +45,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       if ! grep -sqF "autorun.sh" /home/docker/.ashrc; then
         {
           echo
-          echo "export PERSIST_DIR=/mnt/sda/persist"
+          echo "export PERSIST_DIR=/mnt/sda1/persist"
           echo "export RESTORE_TAR=/vagrant/.restore.tar"
           echo "exec /home/docker/autorun.sh"
         } >> /home/docker/.ashrc
@@ -55,14 +56,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Ensure that the docker binary is available to the dev environment Dockerfile
   config.vm.provision "shell", inline: 'cp /usr/local/bin/docker /vagrant/develop/bin/docker'
 
-  # Create the /mnt/sda/persist directory if it does not already exist. If a
+  # Create the /mnt/sda1/persist directory if it does not already exist. If a
   # /vagrant/.restore.tar.gz file exists and the persist directory does not,
   # the restore archive will be extracted to the persist directory.
   config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
       set -e
 
-      persist_dir=/mnt/sda/persist
+      persist_dir=/mnt/sda1/persist
       restore_tar=/vagrant/.restore.tar
       persist_ssh="${persist_dir}/home/.ssh"
 

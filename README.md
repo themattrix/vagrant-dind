@@ -95,10 +95,10 @@ as a volume to the development container.
 >
 > Be sure to consider the following:
 >
-> - Since the VM is a boot2docker instance, only the `/mnt/sda` directory
+> - Since the VM is a boot2docker instance, only the `/mnt/sda1` directory
 > persists across reboots of the VM. If you'd like your volume to persist
 > across reboots of the VM as well, then consider making the source of the
-> mount a subdirectory of `/mnt/sda`. (This is exactly what the `/repos`
+> mount a subdirectory of `/mnt/sda1`. (This is exactly what the `/repos`
 > volume does.)
 >
 > Like the other permanent changes, this will require Vagrant to either be
@@ -115,6 +115,6 @@ as a volume to the development container.
 **...develop outside of the development container, but run things inside it?**
 
 > My current technique is to set my IDE (PyCharm, in my case) to deploy files
-> to the Vagrant box in a subdirectory of `/mnt/sda/repos/`. I then have
+> to the Vagrant box in a subdirectory of `/mnt/sda1/persist/repos/`. I then have
 > a Vagrant ssh session open, from which I can run anything from the command
 > line.
