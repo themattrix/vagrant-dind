@@ -78,8 +78,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         fi
       fi
 
+      chown docker:staff "${persist_dir}"
+
       # Copy new ssh keys into the VM.
       if [ -d /vagrant/.ssh ]; then
+        mkdir -p "${persist_ssh}"
         cp -f /vagrant/.ssh/* "${persist_ssh}"
       fi
 
