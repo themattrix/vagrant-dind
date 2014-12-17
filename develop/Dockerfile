@@ -48,7 +48,7 @@ RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
 # Add fig: "Fast, isolated development environments using Docker"
-RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1.0.0/fig-`uname -s`-`uname -m` \
+RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m` \
     && chmod +x /usr/local/bin/fig
 
 ADD https://raw.githubusercontent.com/junegunn/vim-plug/0.5.7/plug.vim \
