@@ -8,6 +8,7 @@ docker run -i -t --rm --privileged=true \
     -v "${PERSIST_DIR}/repos:/repos" \
     -v "${PERSIST_DIR}/home/.bash_history:/home/.bash_history" \
     -v "${PERSIST_DIR}/home/.ssh:/home/.ssh" \
+    -p 8888:8888 \
     develop
 
 ### Archive persistent data
