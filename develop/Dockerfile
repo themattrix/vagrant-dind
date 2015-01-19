@@ -15,9 +15,9 @@ RUN add-apt-repository -y ppa:ultradvorka/ppa
 RUN apt-get update \
     && apt-get -y install \
         iptables ca-certificates lxc apt-transport-https \
-        tmux git vim htop socat man ruby bash-completion \
-        curl python-pygments vim-youcompleteme python-pip \
-        sshfs \
+        tmux git vim htop socat man ruby ruby1.9.1-dev \
+        bash-completion curl python-pygments vim-youcompleteme \
+        python-pip sshfs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -50,10 +50,9 @@ RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1
 RUN git clone https://github.com/junegunn/fzf.git /home/.fzf \
     && (yes | /home/.fzf/install)
 
-# Can't live without rainbow-colored output
-RUN gem install lolcat
+RUN gem install tomdoc rdoc && gem install lolcat travis
 
-# Interactive grep is pretty nice too!
+# Interactive grep is pretty nice!
 RUN pip install percol
 
 ADD https://raw.githubusercontent.com/junegunn/vim-plug/0.5.7/plug.vim \
