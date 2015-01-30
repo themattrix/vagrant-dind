@@ -35,7 +35,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout 47d3ff0
+    && git checkout c7e55d7
 
 # Set locale
 RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
@@ -48,6 +48,7 @@ RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1
 
 # Fuzzy history utility. Seems nicer than hh.
 RUN git clone https://github.com/junegunn/fzf.git /home/.fzf \
+    && (cd /home/.fzf && git checkout 0.9.2) \
     && (yes | /home/.fzf/install)
 
 RUN gem install tomdoc rdoc && gem install lolcat travis
