@@ -4,7 +4,7 @@ Vagrant.require_version ">= 1.6.3"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "boot2docker"
-  config.vm.box = "yungsang/boot2docker"
+  config.vm.box = "codekitchen/boot2docker"
   config.vm.network "private_network", ip: "192.168.33.10"
   config.vm.synced_folder ".", "/vagrant"
   config.vm.network "forwarded_port", guest: 8888, host: 8888
