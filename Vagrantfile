@@ -115,11 +115,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Delete all untagged images that aren't in use.
   config.vm.provision :shell, run: "always" do |s|
     s.inline = <<-EOT
-      untagged=$(docker images | grep -F '<none>' | awk '{print $3}')
+        stopped_containers=$(docker ps -a | grep 'Exited' | awk '{print $1}')
+        untagged_images=$(docker images | grep '^<none>' | awk '{print $3}')
 
-      if [ -n "${untagged}" ]; then
-        docker rmi ${untagged} || true
-      fi
+        if [ -n "${stopped_containers}" ]; then
+            echo ">>> Removing stopped containers..."
+            docker rm ${stopped_containers}
+        fi
+
+        if [ -n "${untagged_images}" ]; then
+            echo ">>> Removing untagged images..."
+            docker rmi ${untagged_images}
+        fi
     EOT
   end
 
