@@ -42,19 +42,19 @@ RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
-# Add fig: "Fast, isolated development environments using Docker"
-RUN wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m` \
-    && chmod +x /usr/local/bin/fig
+# docker-compose: "Define and run complex applications using Docker"
+RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` \
+    && chmod +x /usr/local/bin/docker-compose
 
 # Fuzzy history utility. Seems nicer than hh.
 RUN git clone https://github.com/junegunn/fzf.git /home/.fzf \
-    && (cd /home/.fzf && git checkout 0.9.2) \
+    && (cd /home/.fzf && git checkout 0.9.3) \
     && (yes | /home/.fzf/install)
 
 RUN gem install tomdoc rdoc && gem install lolcat travis
 
 # Interactive grep is pretty nice!
-RUN pip install percol
+RUN pip install percol==0.0.8
 
 ADD https://raw.githubusercontent.com/junegunn/vim-plug/0.5.7/plug.vim \
     /home/.vim/autoload/plug.vim
