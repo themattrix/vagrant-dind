@@ -35,23 +35,30 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout c7e55d7
+    && git checkout d7daaa0
 
 # Set locale
 RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
 
 RUN echo 'source ~/.bashrc' >> /home/.bash_profile
 
+RUN gem install tomdoc rdoc && gem install lolcat travis
+
 # docker-compose: "Define and run complex applications using Docker"
 RUN wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.1.0/docker-compose-`uname -s`-`uname -m` \
     && chmod +x /usr/local/bin/docker-compose
+
+# docker-machine: "Machine management for a container-centric world"
+RUN wget -O /usr/local/bin/docker-machine https://github.com/docker/machine/releases/download/v0.1.0/docker-machine_linux-amd64 \
+    && chmod +x /usr/local/bin/docker-machine
 
 # Fuzzy history utility. Seems nicer than hh.
 RUN git clone https://github.com/junegunn/fzf.git /home/.fzf \
     && (cd /home/.fzf && git checkout 0.9.3) \
     && (yes | /home/.fzf/install)
 
-RUN gem install tomdoc rdoc && gem install lolcat travis
+RUN wget -O - https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz | \
+    tar -C /usr/local -xz
 
 # Interactive grep is pretty nice!
 RUN pip install percol==0.0.8
