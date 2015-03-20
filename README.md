@@ -19,8 +19,7 @@ cause the container to be destroyed. When the container is destroyed, only
 three things survive:
 
 1. The `/repos` directory, which is provided as a work area.
-2. The `/home/.ssh` directory, which allows for persistent changes to things
-3. like `authorized_keys`.
+2. The `/home/.ssh` directory, which allows for persistent changes to things like `authorized_keys` and `known_hosts`.
 3. Docker images and containers.
 
 In this way, you can be sure to always start with a clean environment,
