@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ensure that all nodes in /dev/mapper correspond to mapped devices currently loaded by the device-mapper kernel driver
+dmsetup mknodes
+
 # First, make sure that cgroups are mounted correctly.
 CGROUP=/sys/fs/cgroup
 : {LOG:=stdio}
@@ -9,7 +12,7 @@ CGROUP=/sys/fs/cgroup
 
 mountpoint -q $CGROUP || 
     mount -n -t tmpfs -o uid=0,gid=0,mode=0755 cgroup $CGROUP || {
-        echo "Could not make a tmpfs mount. Did you use -privileged?"
+        echo "Could not make a tmpfs mount. Did you use --privileged?"
         exit 1
     }
 
@@ -17,7 +20,7 @@ if [ -d /sys/kernel/security ] && ! mountpoint -q /sys/kernel/security
 then
     mount -t securityfs none /sys/kernel/security || {
         echo "Could not mount /sys/kernel/security."
-        echo "AppArmor detection and -privileged mode might break."
+        echo "AppArmor detection and --privileged mode might break."
     }
 fi
 
@@ -86,4 +89,14 @@ rm -rf /var/run/docker.pid
 # Start the docker daemon
 docker -d &>/var/log/docker.log &
 
-exec bash
+(( timeout = 60 + SECONDS ))
+until docker info >/dev/null 2>&1
+do
+    if (( SECONDS >= timeout )); then
+        echo 'Timed out trying to connect to internal docker host.' >&2
+        break
+    fi
+    sleep 1
+done
+
+exec bash --login

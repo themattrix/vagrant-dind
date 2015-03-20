@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM phusion/baseimage:latest
 
 MAINTAINER Matthew Tardiff <mattrix@gmail.com>
 
@@ -35,7 +35,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout d7daaa0
+    && git checkout bb5648f
 
 # Set locale
 RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
@@ -75,4 +75,4 @@ ADD ./bin/docker /usr/local/bin/docker
 ADD ./bin/wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/docker /usr/local/bin/wrapdocker
 
-CMD ["wrapdocker"]
+CMD ["/sbin/my_init", "--skip-startup-files", "--no-kill-all-on-exit", "--quiet", "--", "wrapdocker"]

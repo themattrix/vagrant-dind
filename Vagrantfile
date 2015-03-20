@@ -14,6 +14,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--ioapic", "on"]
     vb.customize ["modifyvm", :id, "--cpus", "2"]
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    vb.customize ['modifyvm', :id, "--nictype1", "virtio"]
   end
 
   # Fix busybox/udhcpc issue
@@ -129,7 +131,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         fi
     EOT
   end
-
-  # Don't try to update the VirtualBox guest additions.
-  config.vbguest.auto_update = false
 end
