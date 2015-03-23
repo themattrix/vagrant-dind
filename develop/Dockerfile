@@ -35,7 +35,7 @@ ENV HISTFILE /home/.bash_history/history
 # cache for this RUN command whenever we want to update this repo.
 RUN git clone https://github.com/themattrix/home.git \
     && cd /home \
-    && git checkout 3e22f9f
+    && git checkout ba28ca4
 
 # Set locale
 RUN locale-gen en_US.UTF-8 && /usr/sbin/update-locale LANG=en_US.UTF-8
