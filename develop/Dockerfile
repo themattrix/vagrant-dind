@@ -75,4 +75,7 @@ ADD ./bin/docker /usr/local/bin/docker
 ADD ./bin/wrapdocker /usr/local/bin/wrapdocker
 RUN chmod +x /usr/local/bin/docker /usr/local/bin/wrapdocker
 
-CMD ["/sbin/my_init", "--skip-startup-files", "--no-kill-all-on-exit", "--quiet", "--", "wrapdocker"]
+# Stop unnecessary services from starting
+RUN rm -rf /etc/service/cron /etc/service/sshd
+
+CMD ["/sbin/my_init", "--skip-startup-files", "--quiet", "--", "wrapdocker"]
