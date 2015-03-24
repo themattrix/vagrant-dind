@@ -56,9 +56,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     EOT
   end
 
-  # Ensure that the docker binary is available to the dev environment Dockerfile
-  config.vm.provision "shell", inline: 'cp /usr/local/bin/docker /vagrant/develop/bin/docker'
-
   # Create the /mnt/sda1/persist directory if it does not already exist. If a
   # /vagrant/.restore.tar.gz file exists and the persist directory does not,
   # the restore archive will be extracted to the persist directory.
@@ -111,7 +108,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Build the docker image containing the development environment
   config.vm.provision :docker do |d|
-    d.build_image "/vagrant/develop", args: "-t develop"
+    d.pull_images "themattrix/develop:latest"
   end
 
   # Delete all untagged images that aren't in use.
